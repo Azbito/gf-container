@@ -1,0 +1,83 @@
+version: "3.9"
+
+services:
+  database:
+    image: postgres:13
+    ports:
+      - "31245:5432"
+    environment:
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-pgpass}
+      POSTGRES_DB: ${PGDATABASE:-postgres}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./SQLs:/docker-entrypoint-initdb.d
+      - ./database:/home/postgres/app
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${PGUSER:-postgres} -d ${PGDATABASE:-postgres}",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      dockerfile: ./gf_server/Dockerfile
+      context: .
+    environment:
+      PGHOST: ${PGHOST:-database}
+      PGPORT: ${PGPORT:-5432}
+      PGUSER: ${PGUSER:-postgres}
+      PGPASSWORD: ${PGPASSWORD:-pgpass}
+      HOST: ${HOST:-127.0.0.1}
+      GATEWAY_OFFSET: ${GATEWAY_OFFSET}
+      LOGIN_OFFSET: ${LOGIN_OFFSET}
+      MISSION_OFFSET: ${MISSION_OFFSET}
+      TICKET_OFFSET: ${TICKET_OFFSET}
+      WORLD_OFFSET: ${WORLD_OFFSET}
+      ZONE_OFFSET: ${ZONE_OFFSET}
+    ports:
+      - "8080:80"
+      - "6543:6543"
+      - "6544:6544"
+      - "6545:6545"
+      - "6546:6546"
+      - "7777:7777"
+      - "5560:5560"
+      - "7878:7878"
+      - "10321:10321"
+      - "20061:20061"
+      - "10322:10322"
+      - "20062:20062"
+      - "10329:10329"
+      - "20069:20069"
+      - "5517:5517"
+      - "5527:5527"
+      - "5597:5597"
+      - "1010:1010"
+      - "1091:1091"
+      - "1021:1021"
+      - "1011:1011"
+      - "1090:1090"
+      - "1020:1020"
+      - "43916:43916"
+      - "10010:10010"
+      - "43121:43121"
+      - "10090:10090"
+      - "34568:34568"
+      - "39901:39901"
+      - "53317:53317"
+      - "10020:10020"
+    depends_on:
+      - database
+    volumes:
+      - ./gf_server/entrypoint.sh:/root/gf_server/entrypoint.sh
+      - ./gf_server/scripts:/root/gf_server/scripts
+      - ./gf_server/_utils:/root/gf_server/_utils
+    entrypoint: ["/root/gf_server/entrypoint.sh"]
+
+volumes:
+  pgdata:

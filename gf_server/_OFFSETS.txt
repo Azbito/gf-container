@@ -1,0 +1,8 @@
+GatewayServer = 16AE07
+LoginServer_Local = 14D1FA
+LoginServer = 152007
+MissionServer = 57F66D
+TicketServer = 11B74B
+WorldServer_Local = 45EC2C
+WorldServer = 4BE759
+ZoneServer = 9EE22D

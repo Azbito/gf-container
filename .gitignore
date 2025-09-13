@@ -1,0 +1,11 @@
+.env
+gf_server/Data/**/*.ini
+gf_server/Data/**/*.smp
+gf_server/Data/**/*.bin
+gf_server/TicketServer/TicketServer
+gf_server/MissionServer/MissionServer
+gf_server/LoginServer/LoginServer
+gf_server/GatewayServer/GatewayServer
+gf_server/_utils/bin/MissionServer
+gf_server/_utils/bin/WorldServer
+gf_server/_utils/bin/ZoneServer
