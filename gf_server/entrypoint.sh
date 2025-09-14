@@ -29,6 +29,6 @@ workdir=/root/gf_server/scripts
 cd "$workdir" || exit 1
 chmod +x ./*.sh
 "$workdir/install.sh"
-# "$workdir/start.sh"
+"$workdir/start.sh"
 
 tail -f /dev/null
