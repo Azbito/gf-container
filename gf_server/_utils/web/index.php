@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $exists_id = pg_query($db_ls, "SELECT * FROM accounts WHERE id = $next_id");
             }
 
-            $pwd_md5 = ($password);
+            $pwd_md5 = md5($password);
 
             $result_ls = pg_query($db_ls, "INSERT INTO public.accounts (id, username, password, realname) VALUES($next_id, '$username', '$pwd_md5', '$username')");
 

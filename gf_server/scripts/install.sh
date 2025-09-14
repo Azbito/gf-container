@@ -36,20 +36,23 @@ SERVER_IP="${IP_PARTS[0]}.${IP_PARTS[1]}.${IP_PARTS[2]}.0"
 HEX_IP=$(printf '%s' "$SERVER_IP" | od -An -tx1 | tr -d ' \n' | awk '{ printf "%-60s", $0 }' | tr ' ' '0')
 IP_BYTES=$(echo "$HEX_IP" | sed 's/\(..\)/\\\x\1/g')
 
-update_binary_ip() {
-    local binary_path=$1
-    local offset=$2
-    
-    log "Patching $binary_path at offset $offset"
-    echo -en "$IP_BYTES" | dd of="$binary_path" bs=1 seek=$((0x$offset)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
-}
+log "Updating GatewayServer"
+echo -en "$IP_BYTES" | dd of="${WORKDIR}/${GATEWAY_BIN}/${GATEWAY_BIN}" bs=1 seek=$((0x$GATEWAY_OFFSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
 
-update_binary_ip "$WORKDIR/$GATEWAY_BIN/$GATEWAY_BIN" "$GATEWAY_OFFSET"
-update_binary_ip "$WORKDIR/$LOGIN_BIN/$LOGIN_BIN" "$LOGIN_OFFSET"
-update_binary_ip "$WORKDIR/$MISSION_BIN/$MISSION_BIN" "$MISSION_OFFSET"
-update_binary_ip "$WORKDIR/$TICKET_BIN/$TICKET_BIN" "$TICKET_OFFSET"
-update_binary_ip "$BIN_FOLDER/$WORLD_BIN" "$WORLD_OFFSET"
-update_binary_ip "$BIN_FOLDER/$ZONE_BIN" "$ZONE_OFFSET"
+log "Updating LoginServer"
+echo -en "$ip_bytes" | dd of="${WORKDIR}/${LOGIN_BIN}/${LOGIN_BIN}" bs=1 seek=$((0x$LOGIN_OFSSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
+
+log "Updating MissionServer"
+echo -en "$IP_BYTES" | dd of="${WORKDIR}/${MISSION_BIN}/${MISSION_BIN}" bs=1 seek=$((0x$MISSION_OFFSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
+
+log "Updating TicketServer"
+echo -en "$IP_BYTES" | dd of="${WORKDIR}/${TICKET_BIN}/${TICKET_BIN}" bs=1 seek=$((0x$TICKET_OFFSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
+
+log "Updating WorldServer binary"
+echo -en "$IP_BYTES" | dd of="${BIN_FOLDER}/${WORLD_BIN}" bs=1 seek=$((0x$WORLD_OFFSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
+
+log "Updating ZoneServer binary"
+echo -en "$IP_BYTES" | dd of="${BIN_FOLDER}/${ZONE_BIN}" bs=1 seek=$((0x$ZONE_OFFSET)) count=${#IP_BYTES} conv=notrunc >/dev/null 2>&1
 
 copy_binary() {
     local source=$1
